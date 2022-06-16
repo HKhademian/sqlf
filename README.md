@@ -1,6 +1,6 @@
 # sqlf
 
-Fast pgSQL generation for [Deno](https://deno.land).
+Fast pgSQL generation for [Deno](https://deno.land)
 
 [![test](https://github.com/danteissaias/sqlf/actions/workflows/test.yml/badge.svg)](https://github.com/danteissaias/sqlf/actions/workflows/test.yml)
 [![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https://deno.land/x/sqlf/mod.ts)
