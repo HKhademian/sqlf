@@ -7,7 +7,7 @@ Fast pgSQL generation for [Deno](https://deno.land)
 [![deno module](https://shield.deno.dev/x/sqlf)](https://deno.land/x/sqlf)
 
 ```ts
-import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
+import { Pool } from "https://deno.land/x/postgres/mod.ts";
 import * as sqlf from "https://deno.land/x/sqlf/mod.ts";
 
 const pool = new Pool("...");
