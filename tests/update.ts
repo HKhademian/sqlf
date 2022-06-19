@@ -6,8 +6,9 @@ Deno.test("update", () => {
     .updateTable("users")
     .set({ id: 2 })
     .where("id", "=", 1)
-    .returning("id", "created");
+    .whereRef("a", "=", "b")
+    .returning("id");
 
-  assertEquals(str, "update users set id=$1 where id=$2 returning id,created;");
+  assertEquals(str, "update users set id=$1 where id=$2 and a=b returning id;");
   assertEquals(args, [2, 1]);
 });

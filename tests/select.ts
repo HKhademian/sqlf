@@ -6,8 +6,9 @@ Deno.test("select", () => {
     .selectFrom("users")
     .select("*")
     .where("id", "=", 1)
+    .whereRef("a", "=", "b")
     .limit(1);
 
-  assertEquals(str, "select * from users where id=$1 limit 1;");
+  assertEquals(str, "select * from users where id=$1 and a=b limit 1;");
   assertEquals(args, [1]);
 });
