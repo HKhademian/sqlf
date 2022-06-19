@@ -1,20 +1,19 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
+import { Where } from "./base.ts";
 
-export class SelectQueryBuilder<T> {
+export class SelectQueryBuilder<T> implements Where {
   #str: string;
   args: unknown[];
-
-  get str() {
-    return this.#str + ";";
-  }
-
-  append(str: string) {
-    this.#str += " " + str;
-  }
 
   constructor(f: string[]) {
     this.#str = "select * from " + f;
     this.args = [];
+  }
+
+  #append = (str: string) => this.#str += " " + str;
+
+  get str() {
+    return this.#str + ";";
   }
 
   select(...s: (keyof T | "*")[]) {
@@ -24,12 +23,18 @@ export class SelectQueryBuilder<T> {
 
   where(column: string, op: string, val: unknown) {
     const str = this.#str.includes("where") ? "and" : "where";
-    this.append(str + " " + column + op + "$" + this.args.push(val));
+    this.#append(str + " " + column + op + "$" + this.args.push(val));
+    return this;
+  }
+
+  whereRef(column: string, op: string, ref: string) {
+    const str = this.#str.includes("where") ? "and" : "where";
+    this.#append(str + " " + column + op + ref);
     return this;
   }
 
   limit(n: number) {
-    this.append("limit " + n);
+    this.#append("limit " + n);
     return this;
   }
 

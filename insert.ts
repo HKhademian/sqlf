@@ -4,30 +4,28 @@ export class InsertQueryBuilder<T> {
   #str: string;
   args: unknown[];
 
-  get str() {
-    return this.#str + ";";
-  }
-
-  append(str: string) {
-    this.#str += " " + str;
-  }
-
   constructor(t: string) {
     this.#str = "insert into " + t;
     this.args = [];
   }
 
+  #append = (str: string) => this.#str += " " + str;
+
+  get str() {
+    return this.#str + ";";
+  }
+
   values(v: Record<string, unknown>) {
-    this.append("(" + Object.keys(v) + ")");
+    this.#append("(" + Object.keys(v) + ")");
     const vals = Object.values(v);
     this.args.push(...vals);
     const expr = Array.from(vals.keys()).map((i) => "$" + (i + 1));
-    this.append("values (" + expr + ")");
+    this.#append("values (" + expr + ")");
     return this;
   }
 
   returning(...r: string[]) {
-    this.append("returning " + r);
+    this.#append("returning " + r);
     return this;
   }
 
