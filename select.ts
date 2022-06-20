@@ -1,59 +1,39 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
-import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
-import { Where } from "./base.ts";
+import { Builder, Column, Operator, Where } from "./base.ts";
 
-export class SelectQueryBuilder<T> implements Where {
-  #str: string;
-  args: unknown[];
-  #pool?: Pool;
+export class SelectQueryBuilder<T> extends Builder<T> implements Where {
+  #s: string[];
 
-  constructor(f: string[], p?: Pool) {
-    this.#str = "select * from " + f;
-    this.args = [];
-    this.#pool = p;
+  constructor(tables: string[], pool?: Pool) {
+    super(pool);
+    this.#s = [];
+    this.append(`select * from ${tables}`);
   }
 
-  #append = (str: string) => this.#str += " " + str;
-
-  get str() {
-    return this.#str + ";";
+  onBuild() {
+    if (!this.#s.length) this.#s = ["*"];
+    this.replace("*", this.#s.toString());
   }
 
-  select(...s: (keyof T | "*")[]) {
-    this.#str = this.#str.replace("*", s.toString());
+  select(...s: (Column<T> | "*")[]) {
+    this.#s.push(...s);
     return this;
   }
 
-  where(column: string, op: string, val: unknown) {
-    const str = this.#str.includes("where") ? "and" : "where";
-    this.#append(str + " " + column + op + "$" + this.args.push(val));
+  where(column: Column<T>, op: Operator, val: unknown) {
+    const cmd = this.includes("where") ? "and" : "where";
+    this.append(cmd, column + op + this.arg(val));
     return this;
   }
 
-  whereRef(column: string, op: string, ref: string) {
-    const str = this.#str.includes("where") ? "and" : "where";
-    this.#append(str + " " + column + op + ref);
+  whereRef(column: Column<T>, op: Operator, ref: string) {
+    const cmd = this.includes("where") ? "and" : "where";
+    this.append(cmd, column + op + ref);
     return this;
   }
 
   limit(n: number) {
-    this.#append("limit " + n);
+    this.append(`limit ${n}`);
     return this;
-  }
-
-  async run(pool = this.#pool) {
-    assert(pool);
-    const conn = await pool.connect();
-    const res = await conn.queryObject<T>(this.str, this.args);
-    conn.release();
-    return res;
-  }
-
-  async all(pool = this.#pool) {
-    assert(pool);
-    const conn = await pool.connect();
-    const res = await conn.queryObject<T>(this.str, this.args);
-    conn.release();
-    return res.rows;
   }
 }

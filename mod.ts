@@ -3,13 +3,19 @@ import { SelectQueryBuilder } from "./select.ts";
 import { InsertQueryBuilder } from "./insert.ts";
 import { UpdateQueryBuilder } from "./update.ts";
 
-export const selectFrom = <T>(...f: string[]) => new SelectQueryBuilder<T>(f);
-export const insertInto = <T>(t: string) => new InsertQueryBuilder<T>(t);
-export const updateTable = <T>(t: string) => new UpdateQueryBuilder<T>(t);
+export const selectFrom = <T>(...tables: string[]) =>
+  new SelectQueryBuilder<T>(tables);
+export const insertInto = <T>(table: string) =>
+  new InsertQueryBuilder<T>(table);
+export const updateTable = <T>(table: string) =>
+  new UpdateQueryBuilder<T>(table);
 
 export class PgClient {
   constructor(public pool: Pool) {}
-  selectFrom = <T>(...f: string[]) => new SelectQueryBuilder<T>(f, this.pool);
-  insertInto = <T>(t: string) => new InsertQueryBuilder<T>(t, this.pool);
-  updateTable = <T>(t: string) => new UpdateQueryBuilder<T>(t, this.pool);
+  selectFrom = <T>(...tables: string[]) =>
+    new SelectQueryBuilder<T>(tables, this.pool);
+  insertInto = <T>(table: string) =>
+    new InsertQueryBuilder<T>(table, this.pool);
+  updateTable = <T>(table: string) =>
+    new UpdateQueryBuilder<T>(table, this.pool);
 }
