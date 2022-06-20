@@ -32,7 +32,15 @@ export class InsertQueryBuilder<T> {
     return this;
   }
 
-  async run(pool = this.#pool): Promise<T[]> {
+  async run(pool = this.#pool) {
+    assert(pool);
+    const conn = await pool.connect();
+    const res = await conn.queryObject<T>(this.str, this.args);
+    conn.release();
+    return res;
+  }
+
+  async all(pool = this.#pool) {
     assert(pool);
     const conn = await pool.connect();
     const res = await conn.queryObject<T>(this.str, this.args);
