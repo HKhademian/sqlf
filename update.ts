@@ -1,13 +1,16 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
+import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 import { Where } from "./base.ts";
 
 export class UpdateQueryBuilder<T> implements Where {
   #str: string;
   args: unknown[];
+  #pool?: Pool;
 
-  constructor(t: string) {
+  constructor(t: string, p?: Pool) {
     this.#str = "update " + t;
     this.args = [];
+    this.#pool = p;
   }
 
   #append = (str: string) => this.#str += " " + str;
@@ -40,7 +43,8 @@ export class UpdateQueryBuilder<T> implements Where {
     return this;
   }
 
-  async run(pool: Pool): Promise<T[]> {
+  async run(pool = this.#pool): Promise<T[]> {
+    assert(pool);
     const conn = await pool.connect();
     const res = await conn.queryObject<T>(this.str, this.args);
     conn.release();
