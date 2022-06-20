@@ -13,8 +13,13 @@ import { PgClient } from "https://deno.land/x/sqlf/mod.ts";
 const pool = new Pool("...");
 const db = new PgClient(pool);
 
+interface User {
+  id: number;
+  email: string;
+}
+
 const [user] = await db
-  .selectFrom("users")
+  .selectFrom<User>("users")
   .select("*")
   .where("email", "=", "bob@example.com")
   .limit(1)
