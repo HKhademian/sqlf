@@ -10,7 +10,7 @@ export class SelectQueryBuilder<T> extends Builder<T> implements Where {
     this.append(`select * from ${tables}`);
   }
 
-  onBuild() {
+  protected onBuild() {
     if (!this.#s.length) this.#s = ["*"];
     this.replace("*", this.#s.toString());
   }
