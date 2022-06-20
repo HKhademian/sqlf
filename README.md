@@ -8,16 +8,17 @@ Fast pgSQL generation for [Deno](https://deno.land)
 
 ```ts
 import { Pool } from "https://deno.land/x/postgres/mod.ts";
-import * as sqlf from "https://deno.land/x/sqlf/mod.ts";
+import { PgClient } from "https://deno.land/x/sqlf/mod.ts";
 
 const pool = new Pool("...");
+const db = new PgClient(pool);
 
-const [user] = await sqlf
+const [user] = await db
   .selectFrom("users")
   .select("*")
   .where("email", "=", "bob@example.com")
   .limit(1)
-  .run(pool);
+  .all();
 
 console.log(user);
 ```
