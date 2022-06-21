@@ -1,5 +1,5 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
-import { Builder, Column, Operator, Where } from "./base.ts";
+import { Builder, Column, Operator, Value, Where } from "./base.ts";
 
 export class UpdateQueryBuilder<T> extends Builder<T> implements Where {
   constructor(table: string, pool?: Pool) {
@@ -14,7 +14,7 @@ export class UpdateQueryBuilder<T> extends Builder<T> implements Where {
     return this;
   }
 
-  where(column: Column<T>, op: Operator, val: T[typeof column]) {
+  where(column: Column<T>, op: Operator, val: Value<typeof column, T>) {
     const cmd = this.includes("where") ? "and" : "where";
     this.append(cmd, column + op + this.arg(val));
     return this;
