@@ -5,6 +5,7 @@ export type Column<T> = (keyof T & string) | string;
 export type Value<C, T> = C extends keyof T ? T[C] : unknown;
 export type Operator = "=" | ">" | "<";
 export type DefaultTable = Record<string, unknown>;
+export type Mutation<T> = Partial<T> & Record<string, unknown>;
 
 export interface Where {
   where(col: string, op: string, val: unknown): Where;

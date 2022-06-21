@@ -1,5 +1,5 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
-import { Builder, Column } from "./base.ts";
+import { Builder, Column, Mutation } from "./base.ts";
 
 export class InsertQueryBuilder<T> extends Builder<T> {
   constructor(table: string, pool?: Pool) {
@@ -7,7 +7,7 @@ export class InsertQueryBuilder<T> extends Builder<T> {
     this.append(`insert into ${table}`);
   }
 
-  values(values: Partial<T>) {
+  values(values: Mutation<T>) {
     this.append("(" + Object.keys(values) + ")");
     const vals = Object.values(values);
     vals.forEach((v) => this.arg(v));
