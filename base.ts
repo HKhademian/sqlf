@@ -1,10 +1,9 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
 import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
-type KeyOf<T> = keyof T extends never ? (string | number) : keyof T;
-export type Column<T> = KeyOf<T> & string;
+export type Column<T> = keyof T & string;
 export type Operator = "=" | ">" | "<";
-export type Mutation = Record<string, unknown>;
+export type DefaultTable = Record<string, unknown>;
 
 export interface Where {
   where(col: string, op: string, val: unknown): Where;

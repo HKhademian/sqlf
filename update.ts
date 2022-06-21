@@ -1,5 +1,5 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
-import { Builder, Column, Mutation, Operator, Where } from "./base.ts";
+import { Builder, Column, Operator, Where } from "./base.ts";
 
 export class UpdateQueryBuilder<T> extends Builder<T> implements Where {
   constructor(table: string, pool?: Pool) {
@@ -7,14 +7,14 @@ export class UpdateQueryBuilder<T> extends Builder<T> implements Where {
     this.append(`update ${table}`);
   }
 
-  set(mutation: Mutation) {
+  set(mutation: Partial<T>) {
     const vals = Object.entries(mutation)
       .map(([k, v]) => k + "=" + this.arg(v));
     this.append(`set ${vals}`);
     return this;
   }
 
-  where(column: Column<T>, op: Operator, val: unknown) {
+  where(column: Column<T>, op: Operator, val: T[typeof column]) {
     const cmd = this.includes("where") ? "and" : "where";
     this.append(cmd, column + op + this.arg(val));
     return this;
@@ -31,7 +31,7 @@ export class UpdateQueryBuilder<T> extends Builder<T> implements Where {
     return this;
   }
 
-  returning(...columns: string[]) {
+  returning(...columns: (Column<T> | "*")[]) {
     this.append(`returning ${columns}`);
     return this;
   }

@@ -20,7 +20,7 @@ export class SelectQueryBuilder<T> extends Builder<T> implements Where {
     return this;
   }
 
-  where(column: Column<T>, op: Operator, val: unknown) {
+  where(column: Column<T>, op: Operator, val: T[typeof column]) {
     const cmd = this.includes("where") ? "and" : "where";
     this.append(cmd, column + op + this.arg(val));
     return this;
