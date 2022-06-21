@@ -1,7 +1,8 @@
 import { Pool } from "https://deno.land/x/postgres@v0.15.0/mod.ts";
 import { assert } from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
-export type Column<T> = (keyof T & string) | string;
+type LiteralUnion<T extends U, U = string> = T | (U & {});
+export type Column<T> = LiteralUnion<(keyof T & string)>;
 export type Value<C, T> = C extends keyof T ? T[C] : unknown;
 export type Operator = "=" | ">" | "<";
 export type DefaultTable = Record<string, unknown>;
