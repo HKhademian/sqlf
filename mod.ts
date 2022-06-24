@@ -4,19 +4,16 @@ import { InsertQueryBuilder } from "./insert.ts";
 import { UpdateQueryBuilder } from "./update.ts";
 import { DefaultTable } from "./base.ts";
 
-export const selectFrom = <T = DefaultTable>(...tables: string[]) =>
-  new SelectQueryBuilder<T>(tables);
-export const insertInto = <T = DefaultTable>(table: string) =>
-  new InsertQueryBuilder<T>(table);
-export const updateTable = <T = DefaultTable>(table: string) =>
-  new UpdateQueryBuilder<T>(table);
+interface Client {
+  selectFrom<T = DefaultTable>(...tables: string[]): SelectQueryBuilder<T>;
+  insertInto<T = DefaultTable>(table: string): InsertQueryBuilder<T>;
+  updateTable<T = DefaultTable>(table: string): UpdateQueryBuilder<T>;
+}
 
-export class PgClient {
-  constructor(public pool: Pool) {}
-  selectFrom = <T = DefaultTable>(...tables: string[]) =>
-    new SelectQueryBuilder<T>(tables, this.pool);
-  insertInto = <T = DefaultTable>(table: string) =>
-    new InsertQueryBuilder<T>(table, this.pool);
-  updateTable = <T = DefaultTable>(table: string) =>
-    new UpdateQueryBuilder<T>(table, this.pool);
+export function createClient(pool?: Pool): Client {
+  return {
+    selectFrom: (...tables: string[]) => new SelectQueryBuilder(tables, pool),
+    insertInto: (table: string) => new InsertQueryBuilder(table, pool),
+    updateTable: (table: string) => new UpdateQueryBuilder(table, pool),
+  };
 }

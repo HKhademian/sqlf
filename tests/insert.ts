@@ -1,8 +1,10 @@
-import { assertEquals } from "https://deno.land/std@0.140.0/testing/asserts.ts";
-import * as sqlf from "../mod.ts";
+import { assertEquals } from "https://deno.land/std@0.145.0/testing/asserts.ts";
+import { createClient } from "../mod.ts";
+
+const db = createClient();
 
 Deno.test("insert", () => {
-  const { sql, args } = sqlf
+  const { sql, args } = db
     .insertInto("users")
     .values({ id: 1 })
     .returning("id", "created")

@@ -1,8 +1,9 @@
-import { assertEquals } from "https://deno.land/std@0.140.0/testing/asserts.ts";
-import * as sqlf from "../mod.ts";
+import { assertEquals } from "https://deno.land/std@0.145.0/testing/asserts.ts";
+import { createClient } from "../mod.ts";
 
+const db = createClient();
 Deno.test("select", () => {
-  const { sql, args } = sqlf
+  const { sql, args } = db
     .selectFrom("users")
     .select("*")
     .where("id", "=", 1)
