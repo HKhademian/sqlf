@@ -8,10 +8,10 @@ Fast pgSQL generation for [Deno](https://deno.land)
 
 ```ts
 import { Pool } from "https://deno.land/x/postgres/mod.ts";
-import { PgClient } from "https://deno.land/x/sqlf/mod.ts";
+import { createClient } from "https://deno.land/x/sqlf/mod.ts";
 
 const pool = new Pool("...");
-const db = new PgClient(pool);
+const db = createClient(pool);
 
 interface User {
   id: number;
